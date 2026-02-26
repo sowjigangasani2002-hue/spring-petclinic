@@ -50,20 +50,21 @@ pipeline {
             }
         }
 
-        stage('Build') {
+       /* stage('Build') {
             steps {
                 sh '''
                     mvn clean package
                 '''
             }
         }
+        */
 
-        stage('Sonar Scan') {
+        stage('Sonar Scan and Build') {
             steps {
                 withCredentials([string(credentialsId: 'sonar_id', variable: 'SONAR_TOKEN')])  {
                 withSonarQubeEnv('sonar') {
                     sh '''
-                        mvn sonar:sonar \
+                        mvn clean package sonar:sonar \
                         -Dsonar.projectKey=sowjigangasani2002-hue_spring-petclinic \
                         -Dsonar.organization=sowjigangasani2002-hue \
                         -Dsonar.host.url=https://sonarcloud.io \
