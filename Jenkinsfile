@@ -1,3 +1,4 @@
+/*
 pipeline {
     agent {label "java"}
     triggers {
@@ -31,3 +32,44 @@ pipeline {
     }
 }
 
+*/
+
+pipeline {
+    agent { label "java" }
+
+    triggers {
+        pollSCM('H/5 * * * *')
+    }
+
+    stages {
+
+        stage('Git Checkout') {
+            steps {
+                git branch: 'main',
+                    url: 'https://github.com/sowjigangasani2002-hue/spring-petclinic.git'
+            }
+        }
+
+        stage('Build') {
+            steps {
+                sh '''
+                    mvn clean package
+                '''
+            }
+        }
+
+        stage('Sonar Scan') {
+            steps {
+                withSonarQubeEnv('sonar') {
+                    sh '''
+                        mvn sonar:sonar \
+                        -Dsonar.projectKey=sowjigangasani2002-hue_spring-petclinic \
+                        -Dsonar.organization=sowjigangasani2002-hue \
+                        -Dsonar.host.url=https://sonarcloud.io
+                    '''
+                }
+            }
+        }
+
+    }
+}
