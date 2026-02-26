@@ -38,7 +38,7 @@ pipeline {
     agent { label "java" }
 
     triggers {
-        pollSCM('H/5 * * * *')
+        pollSCM('* * * * *')
     }
 
     stages {
@@ -60,12 +60,14 @@ pipeline {
 
         stage('Sonar Scan') {
             steps {
+                withCredentials([string(credentialsId: 'sonar_id', variable: 'SONAR_TOKEN')])  {
                 withSonarQubeEnv('sonar') {
                     sh '''
                         mvn sonar:sonar \
                         -Dsonar.projectKey=sowjigangasani2002-hue_spring-petclinic \
                         -Dsonar.organization=sowjigangasani2002-hue \
-                        -Dsonar.host.url=https://sonarcloud.io
+                        -Dsonar.host.url=https://sonarcloud.io \
+                         -Dsonar.login=$SONAR_TOKEN
                     '''
                 }
             }
