@@ -14,18 +14,17 @@ jobs:
       - name: Git checkout
         uses: actions/checkout@v4
 
-      - name: Build Java with Maven
-        run: mvn package
+      # - name: Build Java with Maven
+      #   run: mvn package
         
-      - name: Sonarqube
+      - name: SonarQube Scan
         env:
           SONAR_TOKEN:${{ secrets.SONAR_TOKEN}}
+          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+        
         run: |
-          mvn -B verify \
-          org.sonarsource.scanner.maven:sonar-maven-plugin:sonar \
-          -Dsonar.projectKey=sowjigangasani2002-hue_spring-petclinic \
-          -Dsonar.organization=owjigangasani2002 \
-          -Dsonar.host.url=${SONAR_HOST_URL}  
+          mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=petclinic -Dsonar.projectkey=sowjigangasani2002-hue_spring-petclinic
+          
 
 
         
