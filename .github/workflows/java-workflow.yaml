@@ -23,9 +23,9 @@ jobs:
           SONAR_HOST_URL: ${{secrets.SONAR_HOST_URL}}
         run: |
           mvn -B verify \
-          org.sonarsource.scanner.maven:sonar-maven-plugin:sonar \
+          org.sonarsource.scanner.maven:sonar-maven-plugin:5.5.0.6356:sonar \
           -Dsonar.projectKey=sowjigangasani2002-hue_spring-petclinic \
-          -Dsonar.organization=owjigangasani2002 \
+          -Dsonar.organization=sowjigangasani2002-hue
         
 
 
