@@ -8,25 +8,18 @@ on:
 jobs:
   build:
     name: my-spec
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
 
     steps:
       - name: Git checkout
         uses: actions/checkout@v4
 
-      # - name: Build Java with Maven
-      #   run: mvn package
+      - name: Build Java with Maven
+        run: mvn package
         
       - name: SonarQube Scan
 
-        env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN}}
-          SONAR_HOST_URL: ${{secrets.SONAR_HOST_URL}}
-        run: |
-          mvn -B verify \
-          org.sonarsource.scanner.maven:sonar-maven-plugin:5.5.0.6356:sonar \
-          -Dsonar.projectKey=sowjigangasani2002-hue_spring-petclinic \
-          -Dsonar.organization=sowjigangasani2002-hue
+        
         
 
 
