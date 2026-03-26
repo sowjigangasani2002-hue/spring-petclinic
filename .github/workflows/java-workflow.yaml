@@ -30,7 +30,10 @@
 #             -Dsonar.projectKey=sowjigangasani2002-hue_spring-petclinic
 
         
-   name: Java-workflow
+      
+        
+
+name: Java-workflow
 
 on:
   push:
@@ -64,6 +67,4 @@ jobs:
           args: >
             -Dsonar.organization=sowjigangasani2002-hue
             -Dsonar.projectName=petclinic
-            -Dsonar.projectKey=sowjigangasani2002-hue_spring-petclinic   
-        
-
+            -Dsonar.projectKey=sowjigangasani2002-hue_spring-petclinic
