@@ -1,0 +1,77 @@
+# name: Java-workflow
+
+# on:
+#   push:
+#     branches:
+#       - main
+
+# jobs:
+#   build:
+#     name: my-spec
+#     runs-on: ubuntu-latest
+
+#     steps:
+#       - name: Git checkout
+#         uses: actions/checkout@v4
+
+#       - name: Build Java with Maven
+#         run: mvn package
+        
+#       - name: Build and anyalse
+#         uses: SonarSource/sonarqube-scan-action@v4
+
+#         env:
+#           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN}}
+#           SONAR_HOST_URL: ${{secrets.SONAR_HOST_URL}}
+#         with:
+#           args: >
+#             -Dsonar.organization=sowjigangasani2002-hue
+#             -Dsonar.projectName=petclinic
+#             -Dsonar.projectKey=sowjigangasani2002-hue_spring-petclinic
+
+        
+      
+        
+
+name: Java-workflow
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    name: my-spec
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Cache Maven dependencies
+        uses: actions/cache@v4
+        with:
+          path: ~/.m2
+          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
+          restore-keys: ${{ runner.os }}-m2
+
+      - name: Build with Maven
+        run: mvn clean package --no-transfer-progress
+
+      - name: SonarQube Scan
+        uses: SonarSource/sonarqube-scan-action@v6
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+        with:
+          args: >
+            -Dsonar.organization=sowjigangasani2002-hue
+            -Dsonar.projectName=petclinic
+            -Dsonar.projectKey=sowjigangasani2002-hue_spring-petclinic
