@@ -1,13 +1,17 @@
-FROM maven:3.9.12-eclipse-teaurin-17-alpine AS build
-ADO . /app
-WORKDIR /appRUN mvn package
+FROM maven:3.9.12-eclipse-temurin-17-alpine AS build
 
-FROM eclipse-teaurin:17.0.18_8-jdk-noble AS Runtime
-LABEL myproject=java
-LABEL author-devopsteam
-ARG username=spc
-ENV JAVA_HOME=/usr/lib/jvm/
-RUN useradd -m -d /usr/share/aws -s /bin/bash $(username)
-USER $(username)
-WORKDIR /usr/share/awsCOPY --from=build /app/target/*.jar sowjanya.jarEXPOSE 8080
-CMD ["java", "-jar", "sowjanya.jar"]
+WORKDIR /app
+COPY . /app
+RUN mvn clean package
+
+FROM eclipse-temurin:17-jdk
+
+LABEL project="java"
+LABEL author="devopsteam"
+
+WORKDIR /app
+COPY --from=build /app/target/*.jar app.jar
+
+EXPOSE 8080
+
+CMD ["java", "-jar", "app.jar"]

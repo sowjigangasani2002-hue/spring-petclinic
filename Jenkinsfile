@@ -1,12 +1,14 @@
 pipeline {
     agent { label "spc" }
 
-    // triggers {
-    //     pollSCM('* * * * *')
     parameters {
-        choice(name: 'goals', choices: ['package', 'clean install', 'verify'], description)
+        choice(
+            name: 'goals',
+            choices: ['package', 'clean install', 'verify'],
+            description: 'Select Maven Goal'
+        )
     }
-    }
+
     environment {
         image_name = 'spc'
         tag_name = '1.0'
@@ -20,7 +22,6 @@ pipeline {
                     url: 'https://github.com/sowjigangasani2002-hue/spring-petclinic.git'
             }
         }
-
         /*
         stage('Sonar Scan and Build') {
             steps {
@@ -47,32 +48,33 @@ pipeline {
         }
         */
 
-        stage('Spc java docker image build') {
+
+        stage('Build Docker Image') {
             steps {
-                sh "docker image build -t ${image_name}:${tag_name} ."
-                    
+                sh "docker build -t ${image_name}:${tag_name} ."
             }
         }
-        stage('trivy scan for image') {
+
+        stage('Trivy Scan') {
             steps {
-            sh "trivy image ${image_name}:${tag_name}"
+                sh "trivy image ${image_name}:${tag_name}"
+            }
         }
-     }
-     stage('Image push to the ECR') {
-        steps {
-            sh """aws ecr get-login-password --region ap-south-1 | docker login --username AWS --password-stdin 976565589539.dkr.ecr.ap-south-1.amazonaws.com && \
-                  docker tag ${image_name}:${tag_name} 976565589539.dkr.ecr.ap-south-1.amazonaws.com/ecr:latest && \
-                  docker image ls && \
-                  docker push 976565589539.dkr.ecr.ap-south-1.amazonaws.com/ecr:latest """
-        }
-     }
-     stage('deploy to k8s for dev') {
-        steps {
-            sh 'kubectl apply -f .deploy-k8s/.'
-        }
-     }
-      
 
-    } // <-- closes stages
+        stage('Push to ECR') {
+            steps {
+                sh """
+                aws ecr get-login-password --region ap-south-1 | docker login --username AWS --password-stdin 976565589539.dkr.ecr.ap-south-1.amazonaws.com
+                docker tag ${image_name}:${tag_name} 976565589539.dkr.ecr.ap-south-1.amazonaws.com/ecr:latest
+                docker push 976565589539.dkr.ecr.ap-south-1.amazonaws.com/ecr:latest
+                """
+            }
+        }
 
-} // <-- closes pipeline
+        stage('Deploy to Kubernetes') {
+            steps {
+                sh 'kubectl apply -f deploy-k8s/'
+            }
+        }
+    }
+}
