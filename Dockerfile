@@ -1,13 +1,13 @@
 FROM maven:3.9.12-eclipse-temurin-17-alpine AS build
 
 WORKDIR /app
-COPY . /app
-RUN mvn clean package
+COPY pom.xml .
+RUN mvn dependency:go-offline
+
+COPY . .
+RUN mvn clean package -DskipTests
 
 FROM eclipse-temurin:17-jdk
-
-LABEL project="java"
-LABEL author="devopsteam"
 
 WORKDIR /app
 COPY --from=build /app/target/*.jar app.jar
