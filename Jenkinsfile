@@ -1,11 +1,11 @@
 pipeline {
     agent { label "spc" }
 
-    triggers {
-        pollSCM('* * * * *')
-    // parameters {
-    //     choice(name: 'goals', choices: ['package', 'clean install', 'verify'], description)
-    // }
+    // triggers {
+    //     pollSCM('* * * * *')
+    parameters {
+        choice(name: 'goals', choices: ['package', 'clean install', 'verify'], description)
+    }
     }
     environment {
         image_name = 'spc'
