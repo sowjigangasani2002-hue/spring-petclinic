@@ -13,6 +13,7 @@ pipeline {
         image_name = 'spc'
         tag_name = '1.0'
     }
+    
 
     stages {
 
@@ -44,7 +45,7 @@ pipeline {
                 """
             }
         }
-        
+
 
         stage('Deploy to K8s') {
             steps {
