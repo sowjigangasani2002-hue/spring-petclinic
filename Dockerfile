@@ -4,7 +4,7 @@ WORKDIR /app
 RUN mvn package
 
 FROM eclipse-temurin:25-noble
-COPY --From=build /app/target/*.jar sowjanya.jar
+COPY --from=build /app/target/*.jar sowjanya.jar
 EXPOSE 8080
 CMD ["java", "-jar", "sowjanya.jar"]
 
